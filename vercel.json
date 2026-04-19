@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [{ "src": "*.html", "use": "@vercel/static" }],
+  "routes": [
+    { "src": "/",          "dest": "/landing.html"  },
+    { "src": "/offre",     "dest": "/offre.html"    },
+    { "src": "/systeme",   "dest": "/systeme.html"  }
+  ]
+}

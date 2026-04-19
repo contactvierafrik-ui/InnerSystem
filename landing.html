@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Inner System</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#07070A;--ink2:#0D0C10;--paper:#F5F2EC;--paper2:#EDE9E1;
+  --gold:#A8833A;--gold-lt:#C9A55A;--gold-pale:rgba(168,131,58,.10);
+  --gold-glow:rgba(168,131,58,.18);--white:#FDFCFA;--muted:#7A7168;
+  --muted2:#5A554E;--border:rgba(168,131,58,.18);--border2:rgba(168,131,58,.07);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--ink);color:var(--paper);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9900;opacity:.45;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:rgba(7,7,10,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border2)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;letter-spacing:.12em;color:var(--gold);text-decoration:none}
+.logo em{font-style:italic;color:var(--paper);font-weight:300}
+.lang-switcher{display:flex;align-items:center;gap:0}
+.lang-btn{background:transparent;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .7rem;cursor:pointer;transition:color .25s;position:relative}
+.lang-btn+.lang-btn::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:var(--border2)}
+.lang-btn:hover,.lang-btn.active{color:var(--gold-lt)}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 5rem;position:relative;background:radial-gradient(ellipse 80% 55% at 50% 35%,rgba(30,18,6,.9) 0%,transparent 75%),radial-gradient(ellipse 60% 40% at 70% 80%,rgba(60,25,0,.4) 0%,transparent 65%),var(--ink)}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);opacity:.10}
+.orb-1{width:600px;height:600px;background:var(--gold);top:-15%;left:-20%}
+.orb-2{width:400px;height:400px;background:#3A1A00;top:50%;right:-10%}
+.orb-3{width:300px;height:300px;background:var(--gold);bottom:0;left:45%}
+.hero-eyebrow{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:2.5rem;opacity:0;animation:up .8s .2s forwards;display:flex;align-items:center;gap:.8rem;justify-content:center}
+.hero-eyebrow .ey-line{width:24px;height:1px;background:var(--gold)}
+.hero-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,7vw,5.5rem);font-weight:300;line-height:1.1;max-width:820px;color:var(--white);opacity:0;animation:up 1.1s .4s forwards}
+.hero-headline em{display:block;font-style:italic;color:var(--gold-lt);font-weight:300}
+.hero-headline .line2{font-size:clamp(1.4rem,3.5vw,2.8rem);color:rgba(245,242,236,.5);font-weight:300;margin-top:.4rem}
+.hero-sub{max-width:440px;font-size:.95rem;color:var(--muted);margin:2rem auto 0;opacity:0;animation:up .8s .8s forwards;line-height:1.85}
+.hero-cta-wrap{margin-top:3rem;opacity:0;animation:up .8s 1.1s forwards;display:flex;flex-direction:column;align-items:center;gap:.9rem}
+.hero-note{font-size:.72rem;color:var(--muted);letter-spacing:.06em}
+
+/* BUTTONS */
+.btn-main{display:inline-flex;align-items:center;gap:.7rem;font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;padding:1.05rem 2.8rem;background:transparent;border:1px solid var(--gold);color:var(--gold);position:relative;overflow:hidden;transition:color .35s;text-decoration:none;border-radius:1px}
+.btn-main::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.77,0,.175,1)}
+.btn-main:hover{color:var(--ink)}.btn-main:hover::before{transform:scaleX(1)}
+.btn-main span{position:relative}.btn-main .arr{position:relative;transition:transform .3s}
+.btn-main:hover .arr{transform:translateX(4px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:.5rem;font-family:'DM Sans',sans-serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:.75rem 1.8rem;background:transparent;border:1px solid var(--border);color:var(--muted);transition:all .3s;text-decoration:none;border-radius:1px}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* SECTIONS */
+section{position:relative}
+.section-inner{max-width:1000px;margin:0 auto;padding:5rem 1.5rem}
+.section-inner.narrow{max-width:720px}
+.eyebrow{font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold)}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,3.2rem);font-weight:400;line-height:1.2;color:var(--white);margin-bottom:1.2rem}
+.sec-title em{font-style:italic;color:var(--gold-lt)}
+.sec-body{font-size:.95rem;color:var(--muted);max-width:560px;line-height:1.9}
+.divider-line{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:0 auto;opacity:.5}
+
+/* BOOK MOCKUP */
+.book-section{padding:3rem 1.5rem 4rem;text-align:center;background:var(--ink)}
+.book-mockup{position:relative;width:260px;height:340px;margin:0 auto;perspective:800px;filter:drop-shadow(0 40px 60px rgba(0,0,0,.65))}
+.book-cover{width:210px;height:320px;background:linear-gradient(145deg,#1A1510 0%,#0D0B08 50%,#1E1A12 100%);border:1px solid rgba(168,131,58,.35);position:absolute;left:20px;top:10px;transform:rotateY(-12deg) rotateX(3deg);transform-style:preserve-3d;border-radius:3px 8px 8px 3px;box-shadow:-6px 0 12px rgba(0,0,0,.5),inset -4px 0 8px rgba(0,0,0,.3),0 0 40px rgba(168,131,58,.08);transition:transform .6s ease;overflow:hidden}
+.book-cover:hover{transform:rotateY(-5deg) rotateX(2deg) translateY(-5px)}
+.book-spine{position:absolute;left:0;top:0;bottom:0;width:18px;background:linear-gradient(to right,#0A0806,#1a1510);border-right:1px solid rgba(168,131,58,.25)}
+.book-inner{position:absolute;left:18px;right:0;top:0;bottom:0;padding:1.8rem 1.4rem;display:flex;flex-direction:column;justify-content:space-between}
+.bi-top{}.bi-line{width:35px;height:1px;background:var(--gold);opacity:.55;margin-bottom:.5rem}
+.bi-badge{font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:1rem}
+.bi-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--paper);line-height:1.35;margin-bottom:.4rem}
+.bi-sub{font-size:.52rem;letter-spacing:.06em;color:rgba(245,242,236,.35)}
+.bi-bottom{}.bi-sep{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:.35;margin:.6rem 0}
+.bi-foot{font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,242,236,.3)}
+.book-pages{position:absolute;right:-8px;top:8px;bottom:8px;width:10px;background:repeating-linear-gradient(to bottom,#E8E4DC 0px,#E8E4DC 1px,#D4CFCA 1px,#D4CFCA 2px);border-radius:0 2px 2px 0;box-shadow:2px 0 6px rgba(0,0,0,.3)}
+.pf{position:absolute;width:140px;height:100px;background:rgba(245,242,236,.03);border:1px solid rgba(245,242,236,.07);border-radius:2px;padding:.8rem}
+.pf-1{bottom:-15px;right:-35px;transform:rotate(7deg);animation:pfloat 6s ease-in-out infinite}
+.pf-2{top:20px;right:-45px;transform:rotate(-5deg);animation:pfloat 8s ease-in-out infinite .8s}
+.pf-l{height:1px;background:rgba(245,242,236,.12);margin:.35rem 0}
+.pf-l.g{background:rgba(168,131,58,.28)}.pf-l.s{width:55%}
+@keyframes pfloat{0%,100%{transform:rotate(7deg) translateY(0)}50%{transform:rotate(7deg) translateY(-7px)}}
+
+/* AUDIO VISUAL */
+.audio-visual{background:linear-gradient(135deg,rgba(20,16,10,.97),rgba(10,9,8,.99));border:1px solid var(--border);border-radius:4px;padding:1.8rem;max-width:400px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(168,131,58,.1);position:relative;overflow:hidden}
+.audio-visual::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.av-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem}
+.av-play{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold-pale);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .3s;box-shadow:0 0 20px var(--gold-glow)}
+.av-play:hover{background:var(--gold-glow);box-shadow:0 0 30px rgba(168,131,58,.3)}
+.av-play svg{margin-left:2px}
+.av-info{flex:1}
+.av-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--white);margin-bottom:.12rem}
+.av-dur{font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+.waveform{display:flex;align-items:center;gap:2px;height:40px;margin-bottom:1rem}
+.wb{flex:1;border-radius:2px;opacity:.2;animation:wv var(--d,1.2s) ease-in-out infinite var(--dd,0s) alternate;background:var(--gold)}
+.wb.on{opacity:.85}
+@keyframes wv{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.av-track{height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;cursor:pointer;margin-bottom:.8rem}
+.av-fill{height:100%;background:linear-gradient(to right,var(--gold),var(--gold-lt));width:38%}
+.av-foot{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)}
+.av-tags{display:flex;gap:.5rem;margin-top:1.2rem;flex-wrap:wrap}
+.av-tag{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border2);color:var(--muted);padding:.25rem .7rem;border-radius:2px}
+
+/* ID CARDS */
+.id-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:3rem}
+.id-card{background:rgba(255,255,255,.023);border:1px solid var(--border2);padding:2.2rem 1.8rem;position:relative;overflow:hidden;transition:all .4s;cursor:default}
+.id-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-pale),transparent);opacity:0;transition:opacity .4s}
+.id-card:hover{border-color:rgba(168,131,58,.3);transform:translateY(-3px)}.id-card:hover::after{opacity:1}
+.id-icon{font-size:1.8rem;display:block;margin-bottom:1.2rem;position:relative;z-index:1}
+.id-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--white);margin-bottom:.5rem;position:relative;z-index:1}
+.id-desc{font-size:.88rem;color:var(--muted);line-height:1.7;position:relative;z-index:1}
+.id-card .cline{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.id-card:hover .cline{opacity:.55}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:3rem}
+.testi-card{background:rgba(255,255,255,.02);border:1px solid var(--border2);padding:2rem 1.8rem;position:relative}
+.tq{font-family:'Cormorant Garamond',serif;font-size:3.5rem;line-height:1;color:var(--gold);opacity:.22;position:absolute;top:.8rem;left:1.5rem;font-style:italic}
+.testi-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--paper);line-height:1.65;margin-bottom:1.4rem;margin-top:.5rem}
+.testi-meta{display:flex;align-items:center;gap:.7rem}
+.t-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,rgba(168,131,58,.22),rgba(168,131,58,.05));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--gold);flex-shrink:0}
+.t-name{font-size:.78rem;color:var(--muted)}
+.t-stars{display:flex;gap:.1rem;margin-left:auto}
+.star{font-size:.65rem;color:var(--gold);opacity:.8}
+
+/* EXPLANATION */
+.explain-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.explain-points{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem}
+.ep{display:flex;gap:1rem;align-items:flex-start}
+.ep-ic{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;background:rgba(168,131,58,.04)}
+.ep-label{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem}
+.ep-text{font-size:.88rem;color:var(--muted);line-height:1.7}
+
+/* INTERFACE MOCKUP */
+.im{background:linear-gradient(160deg,rgba(16,14,10,.98),rgba(8,8,10,1));border:1px solid var(--border2);border-radius:6px;max-width:460px;margin:0 auto;box-shadow:0 30px 80px rgba(0,0,0,.7);overflow:hidden}
+.im-bar{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border2)}
+.im-dots{display:flex;gap:.35rem}
+.im-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1)}
+.im-logo{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75}
+.im-body{padding:1.4rem}
+.im-badge{display:inline-block;font-size:.57rem;letter-spacing:.17em;text-transform:uppercase;color:var(--gold);border:1px solid var(--border);padding:.2rem .7rem;margin-bottom:1rem}
+.im-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white);margin-bottom:1rem;line-height:1.3}
+.im-audio{display:flex;align-items:center;gap:.8rem;background:rgba(255,255,255,.03);border:1px solid var(--border2);padding:.75rem 1rem;margin-bottom:1rem;border-radius:2px}
+.im-play{width:30px;height:30px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0}
+.im-tw{flex:1}
+.im-tt{font-size:.75rem;color:var(--paper);margin-bottom:.3rem}
+.im-mt{height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.im-mf{height:100%;background:var(--gold);width:35%}
+.im-write{background:rgba(255,255,255,.03);border:1px solid var(--border2);padding:1rem;margin-bottom:1rem}
+.im-wl{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.im-wt{font-size:.78rem;color:rgba(245,242,236,.38);font-style:italic;line-height:1.6}
+.im-cursor{display:inline-block;width:1px;height:.85em;background:var(--gold);vertical-align:middle;margin-left:1px;animation:blink .9s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.im-chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.im-chip{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border2);color:var(--muted2);padding:.3rem .7rem;border-radius:1px}
+.im-chip.sel{border-color:var(--gold);color:var(--gold)}
+.im-coins{display:flex;align-items:center;gap:.5rem;margin-top:1rem;font-size:.72rem;color:var(--gold);border-top:1px solid var(--border2);padding-top:.8rem}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:3rem;max-width:860px;margin-left:auto;margin-right:auto}
+.price-card{background:rgba(255,255,255,.023);border:1px solid var(--border2);padding:1.8rem 1.4rem;transition:all .35s;position:relative}
+.price-card.feat{border-color:rgba(168,131,58,.32);background:linear-gradient(145deg,rgba(168,131,58,.055),rgba(255,255,255,.02))}
+.pc-badge{position:absolute;top:-1px;left:1.4rem;background:var(--gold);color:var(--ink);font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;padding:.2rem .7rem}
+.p-tier{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.p-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--white);margin-bottom:.8rem}
+.p-amount{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--gold-lt);margin-bottom:1.2rem}
+.p-amount sup{font-size:1rem;vertical-align:super}
+.p-amount sub{font-size:.7rem;color:var(--muted)}
+.p-feats{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem}
+.p-feats li{font-size:.8rem;color:var(--muted);display:flex;gap:.5rem}
+.p-feats li::before{content:'✦';color:var(--gold);font-size:.6rem;margin-top:.2rem;flex-shrink:0}
+
+/* FINAL CTA */
+#final-cta{background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(25,16,3,.95) 0%,transparent 70%),var(--ink);text-align:center}
+.cta-orn{display:flex;align-items:center;gap:1.2rem;justify-content:center;margin-bottom:3rem;opacity:.4}
+.orn-line{flex:1;max-width:80px;height:1px;background:var(--gold)}
+.orn-dia{width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+.cta-hl{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,4rem);font-weight:300;line-height:1.2;color:var(--white);margin-bottom:1.2rem}
+.cta-hl em{font-style:italic;color:var(--gold-lt)}
+.cta-sub{font-size:.9rem;color:var(--muted);max-width:420px;margin:0 auto 3rem;line-height:1.85}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cta-guar{margin-top:2rem;font-size:.72rem;color:var(--muted2);letter-spacing:.06em}
+.cta-guar span{color:var(--gold)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border2);padding:2rem 1.5rem;text-align:center;font-size:.72rem;color:var(--muted2);letter-spacing:.06em}
+footer a{color:var(--muted);text-decoration:none;transition:color .25s}
+footer a:hover{color:var(--gold)}
+
+/* SCROLL REVEAL */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .75s,transform .75s}
+.rv.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* KEYFRAMES */
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .explain-layout{grid-template-columns:1fr;gap:2.5rem}
+  #topbar{padding:.75rem 1.2rem}
+  .section-inner{padding:4rem 1.2rem}
+  .pf-1,.pf-2{display:none}
+}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <a class="logo" href="#">INNER<em>system</em></a>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <p class="hero-eyebrow"><span class="ey-line"></span><span id="h-eye"></span><span class="ey-line"></span></p>
+  <h1 class="hero-headline">
+    <span id="h-hl"></span>
+    <em id="h-em"></em>
+    <span class="line2" id="h-line2"></span>
+  </h1>
+  <p class="hero-sub" id="h-sub"></p>
+  <div class="hero-cta-wrap">
+    <a href="offre.html" class="btn-main"><span id="h-cta"></span><span class="arr">→</span></a>
+    <p class="hero-note" id="h-note"></p>
+  </div>
+</section>
+
+<div style="padding:2rem 0"><div class="divider-line"></div></div>
+
+<!-- BOOK SECTION -->
+<div class="book-section">
+  <p class="eyebrow rv" style="justify-content:center" id="b-eye"></p>
+  <h2 class="sec-title rv d1" style="text-align:center;margin-bottom:2.5rem" id="b-title"></h2>
+  <div style="position:relative;display:inline-block;margin-bottom:1rem" class="rv d2">
+    <div class="book-mockup">
+      <div class="book-cover">
+        <div class="book-spine"></div>
+        <div class="book-inner">
+          <div class="bi-top">
+            <div class="bi-line"></div>
+            <div class="bi-badge">Inner System</div>
+            <div class="bi-title" id="b-cover-title">Transformation<br>Intérieure</div>
+            <div class="bi-sub" id="b-cover-sub">Guide complet · 5 modules</div>
+          </div>
+          <div class="bi-bottom">
+            <div class="bi-sep"></div>
+            <div class="bi-foot" id="b-cover-foot">Plan personnel inclus</div>
+          </div>
+        </div>
+      </div>
+      <div class="book-pages"></div>
+      <div class="pf pf-1"><div class="pf-l g s"></div><div class="pf-l"></div><div class="pf-l s"></div><div class="pf-l"></div><div class="pf-l g"></div></div>
+      <div class="pf pf-2"><div class="pf-l g"></div><div class="pf-l s"></div><div class="pf-l"></div><div class="pf-l s"></div></div>
+    </div>
+  </div>
+  <p class="rv d3" style="font-size:.85rem;color:var(--muted);margin-top:2.5rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.85" id="b-desc"></p>
+</div>
+
+<!-- IDENTIFICATION -->
+<section style="background:linear-gradient(180deg,var(--ink) 0%,rgba(10,8,5,1) 100%)">
+  <div class="section-inner">
+    <p class="eyebrow rv" id="id-eye"></p>
+    <h2 class="sec-title rv d1" id="id-title"></h2>
+    <p class="sec-body rv d2" id="id-body"></p>
+    <div class="id-grid">
+      <div class="id-card rv d1"><span class="id-icon">🔥</span><div class="id-name" id="id-stress"></div><div class="id-desc" id="id-stress-d"></div><div class="cline"></div></div>
+      <div class="id-card rv d2"><span class="id-icon">💰</span><div class="id-name" id="id-money"></div><div class="id-desc" id="id-money-d"></div><div class="cline"></div></div>
+      <div class="id-card rv d3"><span class="id-icon">🌀</span><div class="id-name" id="id-conf"></div><div class="id-desc" id="id-conf-d"></div><div class="cline"></div></div>
+    </div>
+  </div>
+</section>
+
+<div style="padding:1rem 0;background:rgba(10,8,5,1)"><div class="divider-line"></div></div>
+
+<!-- AUDIO VISUAL -->
+<div style="padding:4rem 1.5rem;text-align:center;background:var(--ink2)">
+  <p class="eyebrow rv" style="justify-content:center" id="au-eye"></p>
+  <h2 class="sec-title rv d1" style="text-align:center;margin-bottom:2.5rem" id="au-title"></h2>
+  <div class="audio-visual rv d2">
+    <div class="av-header">
+      <div class="av-play" onclick="togglePlay(this)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6 4l8 5-8 5V4z" fill="#A8833A"/></svg>
+      </div>
+      <div class="av-info"><div class="av-title" id="av-title"></div><div class="av-dur" id="av-dur"></div></div>
+    </div>
+    <div class="waveform" id="waveform"></div>
+    <div class="av-track"><div class="av-fill" id="av-fill"></div></div>
+    <div class="av-foot"><span>1:48</span><span id="av-total">5:00</span></div>
+    <div class="av-tags"><div class="av-tag" id="avt1"></div><div class="av-tag" id="avt2"></div><div class="av-tag" id="avt3"></div></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section style="background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(14,10,4,1) 0%,var(--ink) 80%)">
+  <div class="section-inner">
+    <p class="eyebrow rv" id="te-eye"></p>
+    <h2 class="sec-title rv d1" id="te-title"></h2>
+    <div class="testi-grid">
+      <div class="testi-card rv d1"><div class="tq">"</div><p class="testi-text" id="t1-text"></p><div class="testi-meta"><div class="t-av">A</div><div class="t-name" id="t1-name"></div><div class="t-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div></div>
+      <div class="testi-card rv d2"><div class="tq">"</div><p class="testi-text" id="t2-text"></p><div class="testi-meta"><div class="t-av">S</div><div class="t-name" id="t2-name"></div><div class="t-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div></div>
+      <div class="testi-card rv d3"><div class="tq">"</div><p class="testi-text" id="t3-text"></p><div class="testi-meta"><div class="t-av">M</div><div class="t-name" id="t3-name"></div><div class="t-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLANATION -->
+<section style="background:var(--ink2)">
+  <div class="section-inner">
+    <div class="explain-layout">
+      <div>
+        <p class="eyebrow rv" id="ex-eye"></p>
+        <h2 class="sec-title rv d1" id="ex-title"></h2>
+        <div class="explain-points">
+          <div class="ep rv d1"><div class="ep-ic">🧠</div><div><div class="ep-label" id="ep1-l"></div><div class="ep-text" id="ep1-t"></div></div></div>
+          <div class="ep rv d2"><div class="ep-ic">🎧</div><div><div class="ep-label" id="ep2-l"></div><div class="ep-text" id="ep2-t"></div></div></div>
+          <div class="ep rv d3"><div class="ep-ic">✍</div><div><div class="ep-label" id="ep3-l"></div><div class="ep-text" id="ep3-t"></div></div></div>
+          <div class="ep rv d4"><div class="ep-ic">📄</div><div><div class="ep-label" id="ep4-l"></div><div class="ep-text" id="ep4-t"></div></div></div>
+        </div>
+      </div>
+      <!-- Interface Mockup -->
+      <div class="rv d2">
+        <div class="im">
+          <div class="im-bar">
+            <div class="im-dots"><div class="im-dot"></div><div class="im-dot"></div><div class="im-dot"></div></div>
+            <div class="im-logo">Inner System</div>
+          </div>
+          <div class="im-body">
+            <div class="im-badge" id="im-badge"></div>
+            <div class="im-title" id="im-title"></div>
+            <div class="im-audio">
+              <div class="im-play">▶</div>
+              <div class="im-tw"><div class="im-tt" id="im-track"></div><div class="im-mt"><div class="im-mf"></div></div></div>
+            </div>
+            <div class="im-write">
+              <div class="im-wl" id="im-wl"></div>
+              <div class="im-wt"><span id="im-wt"></span><span class="im-cursor"></span></div>
+            </div>
+            <div class="im-chips">
+              <div class="im-chip sel" id="im-c1"></div>
+              <div class="im-chip" id="im-c2"></div>
+              <div class="im-chip" id="im-c3"></div>
+            </div>
+            <div class="im-coins">✦ <span id="im-coins"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section style="background:linear-gradient(180deg,var(--ink2) 0%,rgba(8,7,5,1) 100%)">
+  <div class="section-inner">
+    <p class="eyebrow rv" style="justify-content:center" id="pr-eye"></p>
+    <h2 class="sec-title rv d1" style="text-align:center;margin-bottom:.5rem" id="pr-title"></h2>
+    <p class="rv d2" style="text-align:center;font-size:.88rem;color:var(--muted)" id="pr-sub"></p>
+    <div class="price-grid">
+      <div class="price-card rv d1"><div class="p-tier" id="pt0"></div><div class="p-name" id="pn0"></div><div class="p-amount" id="pa0"></div><ul class="p-feats"><li id="pf00"></li><li id="pf01"></li><li id="pf02"></li></ul><a href="systeme.html" class="btn-ghost" style="width:100%;justify-content:center" id="pb0"></a></div>
+      <div class="price-card rv d2"><div class="p-tier" id="pt1"></div><div class="p-name" id="pn1">Basic</div><div class="p-amount"><sup>€</sup>5<sub id="ps1"></sub></div><ul class="p-feats"><li id="pf10"></li><li id="pf11"></li><li id="pf12"></li></ul><a href="systeme.html" class="btn-ghost" style="width:100%;justify-content:center" id="pb1"></a></div>
+      <div class="price-card feat rv d3"><div class="pc-badge" id="pc-bdg"></div><div class="p-tier" id="pt2"></div><div class="p-name" id="pn2">Advanced</div><div class="p-amount"><sup>€</sup>15<sub id="ps2"></sub></div><ul class="p-feats"><li id="pf20"></li><li id="pf21"></li><li id="pf22"></li><li id="pf23"></li></ul><a href="systeme.html" class="btn-main" style="width:100%;justify-content:center"><span id="pb2"></span></a></div>
+      <div class="price-card rv d4"><div class="p-tier" id="pt3"></div><div class="p-name" id="pn3">Premium</div><div class="p-amount"><sup>€</sup>35<sub id="ps3"></sub></div><ul class="p-feats"><li id="pf30"></li><li id="pf31"></li><li id="pf32"></li><li id="pf33"></li></ul><a href="systeme.html" class="btn-ghost" style="width:100%;justify-content:center" id="pb3"></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="final-cta">
+  <div class="section-inner narrow" style="text-align:center;padding-top:6rem;padding-bottom:6rem">
+    <div class="cta-orn rv"><div class="orn-line"></div><div class="orn-dia"></div><div class="orn-line"></div></div>
+    <h2 class="cta-hl rv d1" id="cta-hl"></h2>
+    <p class="cta-sub rv d2" id="cta-sub"></p>
+    <div class="cta-btns rv d3">
+      <a href="offre.html" class="btn-main"><span id="cta-b1"></span><span class="arr">→</span></a>
+      <a href="#pricing" class="btn-ghost"><span id="cta-b2"></span></a>
+    </div>
+    <p class="cta-guar rv d4"><span id="cta-guar"></span></p>
+  </div>
+</section>
+
+<footer><p>© 2025 Inner System &nbsp;·&nbsp; <a id="fp-priv" href="#">–</a> &nbsp;·&nbsp; <a id="fp-enter" href="systeme.html">–</a></p></footer>
+
+<script>
+/* ══ TRANSLATIONS ══ */
+const T={
+fr:{
+  h_eye:'Système de transformation intérieure',
+  h_hl:'Tu n\'es pas fatiguée de travailler…',
+  h_em:'tu es fatiguée de vivre une vie qui ne te rend rien.',
+  h_line2:'',
+  h_sub:'Une expérience conçue pour te comprendre. Pas de bruit. Pas de jugement. Juste la vérité — et un chemin.',
+  h_cta:'Entrer dans l\'expérience',
+  h_note:'Accès gratuit · Aucune inscription requise',
+  b_eye:'Le guide que tu n\'as jamais eu',
+  b_title:'Un système. Pas une formation.',
+  b_desc:'Chaque module génère ton plan personnel — téléchargeable, structuré, fait uniquement pour toi.',
+  b_cover_title:'Transformation<br>Intérieure',
+  b_cover_sub:'Guide complet · 5 modules',
+  b_cover_foot:'Plan personnel inclus',
+  id_eye:'Ce que tu ressens',
+  id_title:'Quelque chose en toi<br>ne va pas depuis trop longtemps.',
+  id_body:'Tu n\'as pas besoin d\'une formation de plus. Tu as besoin que quelqu\'un nomme ce que tu ressens — et te donne un chemin.',
+  id_stress:'Stress',id_stress_d:'Tu portes trop depuis trop longtemps. Ton corps te parle. Il est temps d\'écouter.',
+  id_money:'Argent',id_money_d:'Tu travailles… mais rien ne change vraiment. Le problème n\'est pas ta compétence.',
+  id_conf:'Confusion',id_conf_d:'Tu avances… mais sans direction claire. Tu cherches un sens que personne ne t\'a encore montré.',
+  au_eye:'Écouter au lieu de lire',
+  au_title:'Des audios guidés qui parlent<br><em>directement à toi.</em>',
+  av_title:'Module Stress — Audio guidé',av_dur:'5–8 min · Voix apaisante · Coaching profond',
+  avt1:'Psychologie',avt2:'Coaching',avt3:'Immersif',av_total:'5:00',
+  te_eye:'Ce qu\'ils disent',
+  te_title:'Tu n\'es pas seul(e)<br>à ressentir ça.',
+  t1_text:'Je me suis sentie comprise pour la première fois. Pas analysée. Comprise.',t1_name:'Aminata — Dakar',
+  t2_text:'Ça m\'a fait pleurer. Pas de tristesse — de soulagement. Enfin quelqu\'un dit les vraies choses.',t2_name:'Sarah — Paris',
+  t3_text:'Ce n\'est pas un site. Ce n\'est pas une appli. C\'est une expérience. Je n\'avais rien vu de pareil.',t3_name:'Marcus — Bruxelles',
+  ex_eye:'Ce que c\'est vraiment',
+  ex_title:'Ce n\'est pas une formation.<br>Ce n\'est pas de la motivation.<br><em>C\'est un système.</em>',
+  ep1_l:'Psychologie',ep1_t:'Basé sur des mécanismes réels — pas des conseils génériques. Tu comprends pourquoi tu fais ce que tu fais.',
+  ep2_l:'Audio guidé',ep2_t:'Des voix qui te parlent directement. Pas des diapositives. Pas des cours. Une présence.',
+  ep3_l:'Action concrète',ep3_t:'Chaque module se termine par un plan d\'action que tu as créé toi-même — adapté à ta situation réelle.',
+  ep4_l:'PDF personnel',ep4_t:'Ton parcours compilé en un document unique — à relire, à imprimer, à garder.',
+  im_badge:'Advanced — Transformation',im_title:'L\'origine de la fatigue',
+  im_track:'Module Stress · Audio guidé',im_wl:'Ta réponse profonde',
+  im_wt:'Ce qui me pèse le plus en ce moment…',
+  im_c1:'Supprimer',im_c2:'Déléguer',im_c3:'Affronter',im_coins:'+2 Mind Coins gagnés',
+  pr_eye:'Accès',pr_title:'Choisis ton niveau',pr_sub:'Commence gratuitement. Progresse à ton rythme.',
+  pt0:'Accès libre',pn0:'Découverte',pa0:'Gratuit',pf00:'1 module complet',pf01:'Audio guidé',pf02:'Système de coins',pb0:'Commencer',
+  pt1:'Basic',ps1:'/accès',pf10:'1 module approfondi',pf11:'PDF introduction',pf12:'Enregistrement vocal',pb1:'Choisir Basic',
+  pc_bdg:'Populaire',pt2:'Advanced',ps2:'/accès',pf20:'5 modules — niveau coach',pf21:'Audios profonds 5–8 min',pf22:'Plans d\'action structurés',pf23:'PDF personnalisé',pb2:'Choisir Advanced',
+  pt3:'Premium',pn3:'Premium',ps3:'/30 jours',pf30:'Accès complet 30 jours',pf31:'Tous les audios',pf32:'Livre PDF complet',pf33:'Coins illimités',pb3:'Accès Premium',
+  cta_hl:'Tu mérites de te<br><em>retrouver.</em>',
+  cta_sub:'Ce système a été créé pour les personnes qui en ont assez de souffrir seules — et qui sont prêtes à faire quelque chose de différent.',
+  cta_b1:'Commencer maintenant',cta_b2:'Voir les plans',
+  cta_guar:'✦ Accès gratuit disponible · Sans carte bancaire',
+  fp_priv:'Confidentialité',fp_enter:'Entrer dans le système',
+},
+en:{
+  h_eye:'Inner transformation system',
+  h_hl:'You are not tired of working…',
+  h_em:'you are tired of living a life that gives you nothing back.',
+  h_line2:'',
+  h_sub:'An experience built to understand you. No noise. No judgment. Just truth — and a path.',
+  h_cta:'Enter the experience',
+  h_note:'Free access · No sign-up required',
+  b_eye:'The guide you never had',
+  b_title:'A system. Not a course.',
+  b_desc:'Each module generates your personal plan — downloadable, structured, made only for you.',
+  b_cover_title:'Inner<br>Transformation',
+  b_cover_sub:'Complete guide · 5 modules',
+  b_cover_foot:'Personal plan included',
+  id_eye:'What you feel',
+  id_title:'Something inside you<br>hasn\'t been right for too long.',
+  id_body:'You don\'t need another training. You need someone to name what you feel — and give you a path.',
+  id_stress:'Stress',id_stress_d:'You\'ve been carrying too much for too long. Your body is speaking. It\'s time to listen.',
+  id_money:'Money',id_money_d:'You work… but nothing really changes. The problem is not your skill.',
+  id_conf:'Confusion',id_conf_d:'You move forward… but without clear direction. You\'re looking for meaning no one has shown you yet.',
+  au_eye:'Listen instead of read',
+  au_title:'Guided audios that speak<br><em>directly to you.</em>',
+  av_title:'Stress Module — Guided audio',av_dur:'5–8 min · Calming voice · Deep coaching',
+  avt1:'Psychology',avt2:'Coaching',avt3:'Immersive',av_total:'5:00',
+  te_eye:'What they say',
+  te_title:'You are not alone<br>in feeling this.',
+  t1_text:'I felt understood for the first time. Not analyzed. Understood.',t1_name:'Aminata — Dakar',
+  t2_text:'It made me cry. Not from sadness — from relief. Finally someone says the real things.',t2_name:'Sarah — Paris',
+  t3_text:'It\'s not a website. It\'s not an app. It\'s an experience. I had never seen anything like it.',t3_name:'Marcus — Brussels',
+  ex_eye:'What it really is',
+  ex_title:'It\'s not a training.<br>It\'s not motivation.<br><em>It\'s a system.</em>',
+  ep1_l:'Psychology',ep1_t:'Based on real mechanisms — not generic advice. You understand why you do what you do.',
+  ep2_l:'Guided audio',ep2_t:'Voices that speak to you directly. Not slides. Not lectures. A presence.',
+  ep3_l:'Concrete action',ep3_t:'Each module ends with an action plan you created yourself — adapted to your real situation.',
+  ep4_l:'Personal PDF',ep4_t:'Your journey compiled into a unique document — to reread, print, and keep.',
+  im_badge:'Advanced — Transformation',im_title:'The origin of fatigue',
+  im_track:'Stress Module · Guided audio',im_wl:'Your deep answer',
+  im_wt:'What weighs on me the most right now…',
+  im_c1:'Eliminate',im_c2:'Delegate',im_c3:'Confront',im_coins:'+2 Mind Coins earned',
+  pr_eye:'Access',pr_title:'Choose your level',pr_sub:'Start free. Progress at your own pace.',
+  pt0:'Free access',pn0:'Discovery',pa0:'Free',pf00:'1 complete module',pf01:'Guided audio',pf02:'Coin system',pb0:'Start',
+  pt1:'Basic',ps1:'/access',pf10:'1 in-depth module',pf11:'Intro PDF',pf12:'Voice recording',pb1:'Choose Basic',
+  pc_bdg:'Popular',pt2:'Advanced',ps2:'/access',pf20:'5 modules — coach level',pf21:'Deep audios 5–8 min',pf22:'Structured action plans',pf23:'Full personalized PDF',pb2:'Choose Advanced',
+  pt3:'Premium',pn3:'Premium',ps3:'/30 days',pf30:'Full 30-day access',pf31:'All audios',pf32:'Complete PDF book',pf33:'Unlimited coins',pb3:'Premium Access',
+  cta_hl:'You deserve to find<br><em>yourself again.</em>',
+  cta_sub:'This system was created for people who are tired of suffering alone — and who are ready to do something different.',
+  cta_b1:'Start now',cta_b2:'See plans',
+  cta_guar:'✦ Free access available · No credit card',
+  fp_priv:'Privacy',fp_enter:'Enter the system',
+},
+es:{
+  h_eye:'Sistema de transformación interior',
+  h_hl:'No estás cansada de trabajar…',
+  h_em:'estás cansada de vivir una vida que no te devuelve nada.',
+  h_line2:'',
+  h_sub:'Una experiencia diseñada para entenderte. Sin ruido. Sin juicios. Solo la verdad — y un camino.',
+  h_cta:'Entrar en la experiencia',
+  h_note:'Acceso gratuito · Sin registro requerido',
+  b_eye:'La guía que nunca tuviste',
+  b_title:'Un sistema. No una formación.',
+  b_desc:'Cada módulo genera tu plan personal — descargable, estructurado, hecho solo para ti.',
+  b_cover_title:'Transformación<br>Interior',
+  b_cover_sub:'Guía completa · 5 módulos',
+  b_cover_foot:'Plan personal incluido',
+  id_eye:'Lo que sientes',
+  id_title:'Algo dentro de ti<br>no está bien desde hace demasiado.',
+  id_body:'No necesitas otra formación. Necesitas que alguien nombre lo que sientes — y te dé un camino.',
+  id_stress:'Estrés',id_stress_d:'Has cargado demasiado durante demasiado tiempo. Tu cuerpo habla. Es hora de escuchar.',
+  id_money:'Dinero',id_money_d:'Trabajas… pero nada cambia realmente. El problema no es tu habilidad.',
+  id_conf:'Confusión',id_conf_d:'Avanzas… pero sin dirección clara. Buscas un sentido que nadie te ha mostrado todavía.',
+  au_eye:'Escuchar en lugar de leer',
+  au_title:'Audios guiados que hablan<br><em>directamente a ti.</em>',
+  av_title:'Módulo Estrés — Audio guiado',av_dur:'5–8 min · Voz tranquilizadora · Coaching profundo',
+  avt1:'Psicología',avt2:'Coaching',avt3:'Inmersivo',av_total:'5:00',
+  te_eye:'Lo que dicen',
+  te_title:'No estás solo(a)<br>sintiendo esto.',
+  t1_text:'Me sentí comprendida por primera vez. No analizada. Comprendida.',t1_name:'Aminata — Dakar',
+  t2_text:'Me hizo llorar. No de tristeza — de alivio. Por fin alguien dice las cosas reales.',t2_name:'Sarah — París',
+  t3_text:'No es un sitio web. No es una app. Es una experiencia. Nunca había visto algo así.',t3_name:'Marcus — Bruselas',
+  ex_eye:'Lo que realmente es',
+  ex_title:'No es una formación.<br>No es motivación.<br><em>Es un sistema.</em>',
+  ep1_l:'Psicología',ep1_t:'Basado en mecanismos reales — no consejos genéricos. Entiendes por qué haces lo que haces.',
+  ep2_l:'Audio guiado',ep2_t:'Voces que te hablan directamente. No diapositivas. No clases. Una presencia.',
+  ep3_l:'Acción concreta',ep3_t:'Cada módulo termina con un plan de acción que creaste tú mismo(a) — adaptado a tu situación real.',
+  ep4_l:'PDF personal',ep4_t:'Tu recorrido compilado en un documento único — para releer, imprimir y guardar.',
+  im_badge:'Advanced — Transformación',im_title:'El origen de la fatiga',
+  im_track:'Módulo Estrés · Audio guiado',im_wl:'Tu respuesta profunda',
+  im_wt:'Lo que más me pesa en este momento…',
+  im_c1:'Eliminar',im_c2:'Delegar',im_c3:'Enfrentar',im_coins:'+2 Mind Coins ganados',
+  pr_eye:'Acceso',pr_title:'Elige tu nivel',pr_sub:'Empieza gratis. Progresa a tu ritmo.',
+  pt0:'Acceso libre',pn0:'Descubrimiento',pa0:'Gratis',pf00:'1 módulo completo',pf01:'Audio guiado',pf02:'Sistema de monedas',pb0:'Empezar',
+  pt1:'Básico',ps1:'/acceso',pf10:'1 módulo en profundidad',pf11:'PDF introducción',pf12:'Grabación de voz',pb1:'Elegir Básico',
+  pc_bdg:'Popular',pt2:'Avanzado',ps2:'/acceso',pf20:'5 módulos — nivel coach',pf21:'Audios profundos 5–8 min',pf22:'Planes de acción estructurados',pf23:'PDF personalizado completo',pb2:'Elegir Avanzado',
+  pt3:'Premium',pn3:'Premium',ps3:'/30 días',pf30:'Acceso completo 30 días',pf31:'Todos los audios',pf32:'Libro PDF completo',pf33:'Monedas ilimitadas',pb3:'Acceso Premium',
+  cta_hl:'Mereces volverte<br><em>a encontrar.</em>',
+  cta_sub:'Este sistema fue creado para las personas que están hartas de sufrir solas — y que están listas para hacer algo diferente.',
+  cta_b1:'Empezar ahora',cta_b2:'Ver planes',
+  cta_guar:'✦ Acceso gratuito disponible · Sin tarjeta bancaria',
+  fp_priv:'Privacidad',fp_enter:'Entrar al sistema',
+},
+};
+
+/* ══ LANG ENGINE ══ */
+let L='fr';
+const IDS={
+  'h-eye':'h_eye','h-hl':'h_hl','h-em':'h_em','h-line2':'h_line2',
+  'h-sub':'h_sub','h-cta':'h_cta','h-note':'h_note',
+  'b-eye':'b_eye','b-title':'b_title','b-desc':'b_desc',
+  'b-cover-title':'b_cover_title','b-cover-sub':'b_cover_sub','b-cover-foot':'b_cover_foot',
+  'id-eye':'id_eye','id-title':'id_title','id-body':'id_body',
+  'id-stress':'id_stress','id-stress-d':'id_stress_d',
+  'id-money':'id_money','id-money-d':'id_money_d',
+  'id-conf':'id_conf','id-conf-d':'id_conf_d',
+  'au-eye':'au_eye','au-title':'au_title',
+  'av-title':'av_title','av-dur':'av_dur','av-total':'av_total',
+  'avt1':'avt1','avt2':'avt2','avt3':'avt3',
+  'te-eye':'te_eye','te-title':'te_title',
+  't1-text':'t1_text','t1-name':'t1_name',
+  't2-text':'t2_text','t2-name':'t2_name',
+  't3-text':'t3_text','t3-name':'t3_name',
+  'ex-eye':'ex_eye','ex-title':'ex_title',
+  'ep1-l':'ep1_l','ep1-t':'ep1_t','ep2-l':'ep2_l','ep2-t':'ep2_t',
+  'ep3-l':'ep3_l','ep3-t':'ep3_t','ep4-l':'ep4_l','ep4-t':'ep4_t',
+  'im-badge':'im_badge','im-title':'im_title','im-track':'im_track',
+  'im-wl':'im_wl','im-wt':'im_wt',
+  'im-c1':'im_c1','im-c2':'im_c2','im-c3':'im_c3','im-coins':'im_coins',
+  'pr-eye':'pr_eye','pr-title':'pr_title','pr-sub':'pr_sub',
+  'pt0':'pt0','pn0':'pn0','pa0':'pa0','pf00':'pf00','pf01':'pf01','pf02':'pf02','pb0':'pb0',
+  'pt1':'pt1','ps1':'ps1','pf10':'pf10','pf11':'pf11','pf12':'pf12','pb1':'pb1',
+  'pc-bdg':'pc_bdg','pt2':'pt2','ps2':'ps2',
+  'pf20':'pf20','pf21':'pf21','pf22':'pf22','pf23':'pf23','pb2':'pb2',
+  'pt3':'pt3','pn3':'pn3','ps3':'ps3',
+  'pf30':'pf30','pf31':'pf31','pf32':'pf32','pf33':'pf33','pb3':'pb3',
+  'cta-hl':'cta_hl','cta-sub':'cta_sub','cta-b1':'cta_b1','cta-b2':'cta_b2',
+  'cta-guar':'cta_guar',
+  'fp-priv':'fp_priv','fp-enter':'fp_enter',
+};
+
+function setLang(lang,save=true){
+  L=lang;
+  if(save)localStorage.setItem('is_lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===lang));
+  document.documentElement.lang=lang;
+  applyLang();
+}
+function applyLang(){
+  const t=T[L];
+  Object.entries(IDS).forEach(([id,key])=>{
+    const el=document.getElementById(id);
+    if(!el||t[key]===undefined)return;
+    el.innerHTML=t[key];
+  });
+}
+
+/* ══ WAVEFORM ══ */
+function buildWaveform(){
+  const wf=document.getElementById('waveform');if(!wf)return;
+  const h=[30,50,70,45,90,60,40,80,55,75,35,65,85,50,40,70,90,45,60,80,50,35,70,55,40,85,65,50,75,40];
+  h.forEach((v,i)=>{
+    const b=document.createElement('div');
+    b.className='wb'+(i<11?' on':'');
+    b.style.setProperty('--d',(0.8+Math.random()*0.9)+'s');
+    b.style.setProperty('--dd',(Math.random()*0.5)+'s');
+    b.style.height=v+'%';
+    wf.appendChild(b);
+  });
+}
+
+let playing=false,pInt=null,pct=38;
+function togglePlay(btn){
+  playing=!playing;
+  const svg='<svg width="18" height="18" viewBox="0 0 18 18" fill="none">';
+  if(playing){
+    btn.innerHTML=svg+'<rect x="5" y="4" width="3" height="10" rx="1" fill="#A8833A"/><rect x="10" y="4" width="3" height="10" rx="1" fill="#A8833A"/></svg>';
+    pInt=setInterval(()=>{pct=Math.min(pct+.2,100);const f=document.getElementById('av-fill');if(f)f.style.width=pct+'%';if(pct>=100)clearInterval(pInt);},80);
+  } else {
+    btn.innerHTML=svg+'<path d="M6 4l8 5-8 5V4z" fill="#A8833A"/></svg>';
+    clearInterval(pInt);
+  }
+}
+
+/* ══ SCROLL REVEAL ══ */
+function initReveal(){
+  const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+}
+
+/* ══ INIT ══ */
+(function(){
+  const saved=localStorage.getItem('is_lang');
+  const nav=(navigator.language||'fr').toLowerCase().substring(0,2);
+  const lang=saved||(nav==='fr'?'fr':nav==='es'?'es':'en');
+  setLang(lang,false);
+  buildWaveform();
+  setTimeout(initReveal,200);
+})();
+</script>
+</body>
+</html>
