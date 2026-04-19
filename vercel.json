@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "builds": [{ "src": "*.html", "use": "@vercel/static" }],
-  "routes": [
-    { "src": "/",           "dest": "/inner-system-landing.html" },
-    { "src": "/offre",      "dest": "/inner-system-offre.html" },
-    { "src": "/experience", "dest": "/inner-system-v2-advanced.html" }
-  ]
-}
